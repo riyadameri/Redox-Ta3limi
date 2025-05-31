@@ -1,0 +1,21 @@
+.sidebar {
+  height: 100vh;
+  position: fixed;
+}
+
+.main-content {
+  margin-left: 25%;
+}
+
+.content-section {
+  padding: 20px;
+}
+
+.table-responsive {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+#rfid-result {
+  min-height: 300px;
+}
