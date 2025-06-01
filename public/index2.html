@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة المدرسة</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f8f9fc;
+            color: #333;
+        }
+        
+        /* Sidebar styling */
+        .sidebar {
+            background: linear-gradient(180deg, var(--primary-color) 0%, #224abe 100%);
+            min-height: 100vh;
+            transition: all 0.3s;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .sidebar-brand {
+            height: 4.375rem;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 800;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            letter-spacing: 0.05rem;
+            z-index: 1;
+            color: #fff;
+        }
+        
+        .sidebar-brand-icon i {
+            font-size: 2rem;
+        }
+        
+        .sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 0 1rem 1rem;
+        }
+        
+        .sidebar-heading {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 0 1rem 1rem;
+        }
+        
+        .nav-item .nav-link {
+            position: relative;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .nav-item .nav-link:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-item .nav-link i {
+            font-size: 0.85rem;
+            margin-left: 0.25rem;
+        }
+        
+        .nav-item .nav-link.active {
+            color: #fff;
+            font-weight: 700;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Topbar styling */
+        .topbar {
+            height: 4.375rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            background-color: #fff;
+        }
+        
+        .topbar .navbar-search {
+            width: 25rem;
+        }
+        
+        .topbar .navbar-search input {
+            font-size: 0.85rem;
+            height: auto;
+        }
+        
+        .topbar .topbar-divider {
+            width: 0;
+            border-right: 1px solid #e3e6f0;
+            height: calc(4.375rem - 2rem);
+            margin: auto 1rem;
+        }
+        
+        .topbar .nav-item .nav-link {
+            height: 4.375rem;
+            display: flex;
+            align-items: center;
+            padding: 0 0.75rem;
+            color: #d1d3e2;
+        }
+        
+        .topbar .nav-item .nav-link:hover {
+            color: #b7b9cc;
+        }
+        
+        .topbar .nav-item .nav-link .badge-counter {
+            position: absolute;
+            transform: scale(0.7);
+            transform-origin: top right;
+            right: 0.25rem;
+            margin-top: -0.25rem;
+        }
+        
+        .topbar .dropdown-list {
+            padding: 0;
+            border: none;
+            overflow: hidden;
+            width: 20rem !important;
+        }
+        
+        .topbar .dropdown-list .dropdown-header {
+            background-color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            color: #fff;
+        }
+        
+        .topbar .dropdown-list .dropdown-item {
+            white-space: normal;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .topbar .dropdown-list .dropdown-item .icon-circle {
+            height: 2.5rem;
+            width: 2.5rem;
+            border-radius: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .topbar .dropdown-list .dropdown-item .text-truncate {
+            max-width: 13.375rem;
+        }
+        
+        .topbar .dropdown-list .dropdown-item:active {
+            background-color: #eaecf4;
+            color: #3a3b45;
+        }
+        
+        /* Main content styling */
+        #content {
+            width: 100%;
+            padding-top: 1.5rem;
+            padding-bottom: 3rem;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Card styling */
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1.5rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            padding: 1rem 1.35rem;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            opacity: 0.3;
+        }
+        
+        /* Dashboard stats */
+        .stat-card {
+            border-left: 0.25rem solid;
+        }
+        
+        .stat-card.primary {
+            border-left-color: var(--primary-color);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .stat-card.info {
+            border-left-color: var(--info-color);
+        }
+        
+        .stat-card.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        /* Buttons */
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            margin: 0 0.15rem;
+        }
+        
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .table thead th {
+            border-bottom-width: 1px;
+            font-weight: 700;
+            color: var(--dark-color);
+            background-color: #f8f9fc;
+        }
+        
+        /* Forms */
+        .form-control, .form-select {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+        }
+        
+        /* Schedule items */
+        .schedule-item {
+            background-color: #f8f9fc;
+            border-radius: 0.35rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e3e6f0;
+        }
+        
+        .schedule-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        /* Login page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f8f9fc;
+        }
+        
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .login-card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #224abe 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .login-card-body {
+            padding: 2rem;
+            background-color: white;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                z-index: 1000;
+                width: 14rem;
+                margin-right: -14rem;
+            }
+            
+            .sidebar.toggled {
+                margin-right: 0;
+            }
+            
+            #content {
+                width: 100%;
+                min-width: 100%;
+            }
+            
+            .topbar .navbar-search {
+                width: 100%;
+            }
+        }
+        
+        /* RTL specific styles */
+        .form-floating>label {
+            right: 0;
+            left: auto;
+        }
+        
+        .form-floating>.form-control:focus~label,
+        .form-floating>.form-control:not(:placeholder-shown)~label,
+        .form-floating>.form-select~label {
+            transform: scale(0.85) translateY(-0.5rem) translateX(1.15rem);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Animation classes */
+        .animate-bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+        
+        /* Custom badges */
+        .badge-outline-primary {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            background-color: transparent;
+        }
+        
+        .badge-outline-success {
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            background-color: transparent;
+        }
+        
+        .badge-outline-danger {
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+            background-color: transparent;
+        }
+        
+        /* Custom modal styles */
+        .modal-header {
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #e3e6f0;
+        }
+        
+        /* Custom tooltip styles */
+        .tooltip-inner {
+            max-width: 300px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Custom avatar styles */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        /* Custom switch styles */
+        .form-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+        }
+        
+        /* Custom progress bar styles */
+        .progress {
+            height: 0.75rem;
+            border-radius: 0.35rem;
+        }
+        
+        /* Custom alert styles */
+        .alert {
+            border: none;
+            border-left: 4px solid;
+        }
+        
+        /* Dark mode toggle */
+        .dark-mode .sidebar {
+            background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
+        }
+        
+        .dark-mode .card {
+            background-color: #2d3748;
+            color: #f7fafc;
+        }
+        
+        .dark-mode .card-header {
+            background-color: #1a202c;
+            border-bottom-color: #4a5568;
+            color: #f7fafc;
+        }
+        
+        .dark-mode body {
+            background-color: #1a202c;
+            color: #f7fafc;
+        }
+        
+        .dark-mode .table {
+            color: #f7fafc;
+        }
+        
+        .dark-mode .table thead th {
+            background-color: #2d3748;
+            color: #f7fafc;
+        }
+        
+        .dark-mode .form-control, 
+        .dark-mode .form-select {
+            background-color: #2d3748;
+            color: #f7fafc;
+            border-color: #4a5568;
+        }
+        
+        .dark-mode .form-control:focus, 
+        .dark-mode .form-select:focus {
+            background-color: #2d3748;
+            color: #f7fafc;
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="login-section" class="login-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="login-card">
+                        <div class="login-card-header">
+                            <h3><i class="fas fa-graduation-cap me-2"></i>نظام إدارة المدرسة</h3>
+                            <p class="mb-0">منصة متكاملة لإدارة الطلاب والحصص والمدفوعات</p>
+                        </div>
+                        <div class="login-card-body">
+                            <ul class="nav nav-tabs nav-justified mb-4" id="authTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-tab-pane" type="button" role="tab">تسجيل الدخول</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-tab-pane" type="button" role="tab">إنشاء حساب</button>
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content" id="authTabsContent">
+                                <!-- Login Form -->
+                                <div class="tab-pane fade show active" id="login-tab-pane" role="tabpanel">
+                                    <form id="loginForm">
+                                        <div class="mb-3">
+                                            <label for="username" class="form-label">اسم المستخدم</label>
+                                            <input type="text" class="form-control" id="username" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">كلمة المرور</label>
+                                            <input type="password" class="form-control" id="password" required>
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-sign-in-alt me-1"></i> تسجيل الدخول
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                
+                                <!-- Register Form -->
+                                <div class="tab-pane fade" id="register-tab-pane" role="tabpanel">
+                                    <form id="registerForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="regUsername" class="form-label">اسم المستخدم</label>
+                                                <input type="text" class="form-control" id="regUsername" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fullName" class="form-label">الاسم الكامل</label>
+                                                <input type="text" class="form-control" id="fullName" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="regPassword" class="form-label">كلمة المرور</label>
+                                                <input type="password" class="form-control" id="regPassword" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="confirmPassword" class="form-label">تأكيد كلمة المرور</label>
+                                                <input type="password" class="form-control" id="confirmPassword" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="role" class="form-label">الدور</label>
+                                                <select class="form-select" id="role" required>
+                                                    <option value="admin">مدير النظام</option>
+                                                    <option value="secretary">سكرتير</option>
+                                                    <option value="accountant">محاسب</option>
+                                                    <option value="teacher">أستاذ</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="phone" class="form-label">رقم الهاتف</label>
+                                                <input type="tel" class="form-control" id="phone">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">البريد الإلكتروني</label>
+                                            <input type="email" class="form-control" id="email">
+                                        </div>
+                                        
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-user-plus me-1"></i> إنشاء حساب
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main App Section -->
+    <div id="main-app" style="display: none;">
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+            <!-- Sidebar -->
+            <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+                <!-- Sidebar - Brand -->
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+                    <div class="sidebar-brand-icon">
+                        <i class="fas fa-school"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-2">إدارة المدرسة</div>
+                </a>
+                
+                <!-- Divider -->
+                <hr class="sidebar-divider my-0">
+                
+                <!-- Nav Item - Dashboard -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="dashboard">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>لوحة التحكم</span>
+                    </a>
+                </li>
+                
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+                
+                <!-- Heading -->
+                <div class="sidebar-heading">
+                    الإدارة الأساسية
+                </div>
+                
+                <!-- Nav Item - Students -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="students">
+                        <i class="fas fa-fw fa-user-graduate"></i>
+                        <span>الطلاب</span>
+                    </a>
+                </li>
+                
+                <!-- Nav Item - Teachers -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="teachers">
+                        <i class="fas fa-fw fa-chalkboard-teacher"></i>
+                        <span>الأساتذة</span>
+                    </a>
+                </li>
+                
+                <!-- Nav Item - Classes -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="classes">
+                        <i class="fas fa-fw fa-book-open"></i>
+                        <span>الحصص</span>
+                    </a>
+                </li>
+                
+                <!-- Nav Item - Classrooms -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="classrooms">
+                        <i class="fas fa-fw fa-door-open"></i>
+                        <span>القاعات</span>
+                    </a>
+                </li>
+                
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+                
+                <!-- Heading -->
+                <div class="sidebar-heading">
+                    المالية
+                </div>
+                
+                <!-- Nav Item - Payments -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="payments" id="payments-link">
+                        <i class="fas fa-fw fa-money-bill-wave"></i>
+                        <span>المدفوعات</span>
+                    </a>
+                </li>
+                
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+                
+                <!-- Heading -->
+                <div class="sidebar-heading">
+                    النظام
+                </div>
+                
+                <!-- Nav Item - Cards -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="cards" id="cards-link">
+                        <i class="fas fa-fw fa-id-card"></i>
+                        <span>البطاقات</span>
+                    </a>
+                </li>
+                
+                <!-- Nav Item - RFID -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="rfid">
+                        <i class="fas fa-fw fa-id-badge"></i>
+                        <span>نظام البطاقات</span>
+                    </a>
+                </li>
+                
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+                
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </ul>
+            <!-- End of Sidebar -->
+            
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Topbar -->
+                    <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
+                        <!-- Sidebar Toggle (Topbar) -->
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle me-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        
+                        <!-- Dark Mode Toggle -->
+                        <button class="btn btn-link rounded-circle me-3" id="darkModeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        
+                        <!-- Topbar Search -->
+                        <form class="d-none d-sm-inline-block form-inline me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            <div class="input-group">
+                                <input type="text" class="form-control bg-light border-0 small" placeholder="بحث..." aria-label="Search">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav me-auto">
+                            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                            <li class="nav-item dropdown no-arrow d-sm-none">
+                                <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-search fa-fw"></i>
+                                </a>
+                                <!-- Dropdown - Messages -->
+                                <div class="dropdown-menu dropdown-menu-end p-3 shadow animated--grow-in">
+                                    <form class="form-inline me-auto w-100 navbar-search">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control bg-light border-0 small" placeholder="بحث..." aria-label="Search">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            
+                            <!-- Nav Item - Alerts -->
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-bell fa-fw"></i>
+                                    <!-- Counter - Alerts -->
+                                    <span class="badge badge-danger badge-counter">3+</span>
+                                </a>
+                                <!-- Dropdown - Alerts -->
+                                <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in">
+                                    <h6 class="dropdown-header">
+                                        مركز التنبيهات
+                                    </h6>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="me-3">
+                                            <div class="icon-circle bg-primary">
+                                                <i class="fas fa-file-alt text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="small text-gray-500">ديسمبر 12, 2023</div>
+                                            <span class="font-weight-bold">تقرير شهري جديد جاهز للتنزيل!</span>
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="me-3">
+                                            <div class="icon-circle bg-success">
+                                                <i class="fas fa-donate text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="small text-gray-500">ديسمبر 7, 2023</div>
+                                            $290.29 has been deposited into your account!
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="me-3">
+                                            <div class="icon-circle bg-warning">
+                                                <i class="fas fa-exclamation-triangle text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="small text-gray-500">ديسمبر 2, 2023</div>
+                                            Spending Alert: We've noticed unusually high spending for your account.
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item text-center small text-gray-500" href="#">عرض جميع التنبيهات</a>
+                                </div>
+                            </li>
+                            
+                            <!-- Nav Item - Messages -->
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-envelope fa-fw"></i>
+                                    <!-- Counter - Messages -->
+                                    <span class="badge badge-danger badge-counter">7</span>
+                                </a>
+                                <!-- Dropdown - Messages -->
+                                <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in">
+                                    <h6 class="dropdown-header">
+                                        مركز الرسائل
+                                    </h6>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="dropdown-list-image me-3">
+                                            <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60" alt="...">
+                                            <div class="status-indicator bg-success"></div>
+                                        </div>
+                                        <div>
+                                            <div class="text-truncate">Hi there! I am wondering if you can help me with a problem I've been having.</div>
+                                            <div class="small text-gray-500">Emily Fowler · 58m</div>
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="dropdown-list-image me-3">
+                                            <img class="rounded-circle" src="https://source.unsplash.com/cssvEZacHvQ/60x60" alt="...">
+                                            <div class="status-indicator"></div>
+                                        </div>
+                                        <div>
+                                            <div class="text-truncate">I have the photos that you ordered last month, how would you like them sent to you?</div>
+                                            <div class="small text-gray-500">Jae Chun · 1d</div>
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="dropdown-list-image me-3">
+                                            <img class="rounded-circle" src="https://source.unsplash.com/IWLOvomUmWU/60x60" alt="...">
+                                            <div class="status-indicator bg-warning"></div>
+                                        </div>
+                                        <div>
+                                            <div class="text-truncate">Last month's report looks great, I am very happy with the progress so far, keep up the good work!</div>
+                                            <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item text-center small text-gray-500" href="#">قراءة المزيد من الرسائل</a>
+                                </div>
+                            </li>
+                            
+                            <div class="topbar-divider d-none d-sm-block"></div>
+                            
+                            <!-- Nav Item - User Information -->
+                            <li class="nav-item dropdown no-arrow">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                    <span class="me-2 d-none d-lg-inline text-gray-600 small" id="user-name">عمر أحمد</span>
+                                    <span class="badge bg-success" id="user-role">مدير النظام</span>
+                                    <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+                                </a>
+                                <!-- Dropdown - User Information -->
+                                <div class="dropdown-menu dropdown-menu-end shadow animated--grow-in">
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>
+                                        الملف الشخصي
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>
+                                        الإعدادات
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-list fa-sm fa-fw me-2 text-gray-400"></i>
+                                        سجل النشاط
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>
+                                        تسجيل الخروج
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+                    <!-- End of Topbar -->
+                    
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- Dashboard Section -->
+                        <div id="dashboard" class="content-section active">
+                            <!-- Page Heading -->
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800">لوحة التحكم</h1>
+                                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                    <i class="fas fa-download fa-sm text-white-50"></i> إنشاء تقرير
+                                </a>
+                            </div>
+                            
+                            <!-- Content Row -->
+                            <div class="row">
+                                <!-- Students Card -->
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    <div class="card stat-card primary border-left-primary shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col me-2">
+                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                        عدد الطلاب</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="studentsCount">0</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-user-graduate fa-2x text-gray-300"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Teachers Card -->
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    <div class="card stat-card success border-left-success shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col me-2">
+                                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                        عدد الأساتذة</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="teachersCount">0</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-chalkboard-teacher fa-2x text-gray-300"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Classes Card -->
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    <div class="card stat-card info border-left-info shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col me-2">
+                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                        عدد الحصص</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="classesCount">0</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-book-open fa-2x text-gray-300"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Pending Requests Card -->
+                                <div class="col-xl-3 col-md-6 mb-4">
+                                    <div class="card stat-card warning border-left-warning shadow h-100 py-2">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col me-2">
+                                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                        مدفوعات معلقة</div>
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Content Row -->
+                            <div class="row">
+                                <!-- Recent Activity -->
+                                <div class="col-lg-6 mb-4">
+                                    <div class="card shadow mb-4">
+                                        <div class="card-header py-3">
+                                            <h6 class="m-0 font-weight-bold text-primary">النشاط الأخير</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="list-group list-group-flush" id="recentActivity">
+                                                <div class="list-group-item">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>تم تسجيل دخولك بنجاح</span>
+                                                        <small class="text-muted">منذ دقيقة</small>
+                                                    </div>
+                                                </div>
+                                                <div class="list-group-item">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>تم تحديث بيانات الطالب أحمد محمد</span>
+                                                        <small class="text-muted">منذ 5 دقائق</small>
+                                                    </div>
+                                                </div>
+                                                <div class="list-group-item">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>تم تسجيل دفعة جديدة بقيمة 50 د.ك</span>
+                                                        <small class="text-muted">منذ 10 دقائق</small>
+                                                    </div>
+                                                </div>
+                                                <div class="list-group-item">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>تم إضافة حصة جديدة للرياضيات</span>
+                                                        <small class="text-muted">منذ 15 دقيقة</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Upcoming Classes -->
+                                <div class="col-lg-6 mb-4">
+                                    <div class="card shadow mb-4">
+                                        <div class="card-header py-3">
+                                            <h6 class="m-0 font-weight-bold text-primary">الحصص القادمة</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>الحصة</th>
+                                                            <th>اليوم</th>
+                                                            <th>الوقت</th>
+                                                            <th>القاعة</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>الرياضيات</td>
+                                                            <td>السبت</td>
+                                                            <td>04:00 م</td>
+                                                            <td>قاعة 1</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>الفيزياء</td>
+                                                            <td>الأحد</td>
+                                                            <td>05:00 م</td>
+                                                            <td>قاعة 2</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>الكيمياء</td>
+                                                            <td>الإثنين</td>
+                                                            <td>03:00 م</td>
+                                                            <td>قاعة 3</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Students Section -->
+                        <div id="students" class="content-section">
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800">إدارة الطلاب</h1>
+                                <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                                    <i class="fas fa-plus fa-sm text-white-50"></i> إضافة طالب جديد
+                                </button>
+                            </div>
+                            
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">قائمة الطلاب</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-end shadow animated--fade-in">
+                                            <div class="dropdown-header">خيارات التصدير:</div>
+                                            <a class="dropdown-item" href="#">Excel</a>
+                                            <a class="dropdown-item" href="#">PDF</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">طباعة القائمة</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="studentsTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th width="5%">#</th>
+                                                    <th>اسم الطالب</th>
+                                                    <th>رقم الطالب</th>
+                                                    <th>ولي الأمر</th>
+                                                    <th>السنة الدراسية</th>
+                                                    <th>عدد الحصص</th>
+                                                    <th width="15%">إجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Students will be loaded here dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Teachers Section -->
+                        <div id="teachers" class="content-section">
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800">إدارة الأساتذة</h1>
+                                <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addTeacherModal">
+                                    <i class="fas fa-plus fa-sm text-white-50"></i> إضافة أستاذ جديد
+                                </button>
+                            </div>
+                            
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">قائمة الأساتذة</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="teachersTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th width="5%">#</th>
+                                                    <th>اسم الأستاذ</th>
+                                                    <th>التخصصات</th>
+                                                    <th>رقم الهاتف</th>
+                                                    <th>تاريخ التعيين</th>
+                                                    <th width="10%">إجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Teachers will be loaded here dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Classes Section -->
+                        <div id="classes" class="content-section">
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800">إدارة الحصص</h1>
+                                <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addClassModal">
+                                    <i class="fas fa-plus fa-sm text-white-50"></i> إضافة حصة جديدة
+                                </button>
+                            </div>
+                            
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">قائمة الحصص</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="classesTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th width="5%">#</th>
+                                                    <th>اسم الحصة</th>
+                                                    <th>المادة</th>
+                                                    <th>السنة الدراسية</th>
+                                                    <th>الأستاذ</th>
+                                                    <th>عدد الطلاب</th>
+                                                    <th width="15%">إجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Classes will be loaded here dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Classrooms Section -->
+                        <div id="classrooms" class="content-section">
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800">إدارة القاعات</h1>
+                                <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addClassroomModal">
+                                    <i class="fas fa-plus fa-sm text-white-50"></i> إضافة قاعة جديدة
+                                </button>
+                            </div>
+                            
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">قائمة القاعات</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="classroomsTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th width="5%">#</th>
+                                                    <th>اسم القاعة</th>
+                                                    <th>السعة</th>
+                                                    <th>الموقع</th>
+                                                    <th width="10%">إجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Classrooms will be loaded here dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payments Section -->
+                        <div id="payments" class="content-section">
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800">إدارة المدفوعات</h1>
+                                <div>
+                                    <button class="btn btn-sm btn-primary shadow-sm me-2" data-bs-toggle="modal" data-bs-target="#generatePaymentsModal">
+                                        <i class="fas fa-calculator fa-sm text-white-50"></i> إنشاء مدفوعات
+                                    </button>
+                                    <button class="btn btn-sm btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#paymentReportModal">
+                                        <i class="fas fa-file-invoice-dollar fa-sm text-white-50"></i> تقرير المدفوعات
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">فلترة المدفوعات</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="paymentStudentSelect" class="form-label">الطالب</label>
+                                            <select class="form-select" id="paymentStudentSelect">
+                                                <option value="" selected disabled>اختر طالب</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="paymentClassSelect" class="form-label">الحصة</label>
+                                            <select class="form-select" id="paymentClassSelect">
+                                                <option value="" selected disabled>اختر حصة</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="paymentMonthSelect" class="form-label">الشهر</label>
+                                            <select class="form-select" id="paymentMonthSelect">
+                                                <option value="" selected disabled>اختر شهر</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">قائمة المدفوعات</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="paymentsTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th width="5%">#</th>
+                                                    <th>الطالب</th>
+                                                    <th>الحصة</th>
+                                                    <th>الشهر</th>
+                                                    <th>المبلغ</th>
+                                                    <th>الحالة</th>
+                                                    <th>تاريخ الدفع</th>
+                                                    <th width="10%">إجراء</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Payments will be loaded here dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Cards Section -->
+                        <div id="cards" class="content-section">
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800">إدارة البطاقات</h1>
+                                <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#assignCardModal">
+                                    <i class="fas fa-id-card fa-sm text-white-50"></i> تعيين بطاقة
+                                </button>
+                            </div>
+                            
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">البطاقات المسجلة</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="cardsTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th width="5%">#</th>
+                                                    <th>رقم البطاقة</th>
+                                                    <th>الطالب</th>
+                                                    <th>تاريخ الإصدار</th>
+                                                    <th width="10%">إجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Cards will be loaded here dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- RFID Section -->
+                        <div id="rfid" class="content-section">
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800">نظام البطاقات الذكية</h1>
+                                <button class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm" id="startRFIDBtn">
+                                    <i class="fas fa-play fa-sm text-white-50"></i> بدء المسح
+                                </button>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-lg-6 mb-4">
+                                    <div class="card shadow mb-4">
+                                        <div class="card-header py-3">
+                                            <h6 class="m-0 font-weight-bold text-primary">قارئ البطاقات</h6>
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <div class="mb-4">
+                                                <i class="fas fa-id-card fa-5x text-primary animate-bounce"></i>
+                                            </div>
+                                            <h4 class="mb-3">ضع البطاقة على القارئ</h4>
+                                            <p class="text-muted">سيتم التعرف على الطالب تلقائياً عند مسح البطاقة</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-6 mb-4">
+                                    <div class="card shadow mb-4">
+                                        <div class="card-header py-3">
+                                            <h6 class="m-0 font-weight-bold text-primary">نتيجة المسح</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="rfid-result" class="text-center py-4">
+                                                <div class="alert alert-info">
+                                                    <h4>في انتظار المسح</h4>
+                                                    <p>لم يتم مسح أي بطاقة بعد</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.container-fluid -->
+                </div>
+                <!-- End of Main Content -->
+                
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>حقوق النشر &copy; نظام إدارة المدرسة 2023</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+            </div>
+            <!-- End of Content Wrapper -->
+        </div>
+        <!-- End of Page Wrapper -->
+        
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+        
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">تأكيد الخروج</h5>
+                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">هل أنت متأكد أنك تريد تسجيل الخروج؟</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">إلغاء</button>
+                        <button class="btn btn-primary" id="logoutBtn">تسجيل الخروج</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add Student Modal -->
+        <div class="modal fade" id="addStudentModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">إضافة طالب جديد</h5>
+                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <form id="addStudentForm">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="studentName" class="form-label">اسم الطالب</label>
+                                    <input type="text" class="form-control" id="studentName" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="studentId" class="form-label">رقم الطالب</label>
+                                    <input type="text" class="form-control" id="studentId" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="birthDate" class="form-label">تاريخ الميلاد</label>
+                                    <input type="date" class="form-control" id="birthDate">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="registrationDate" class="form-label">تاريخ التسجيل</label>
+                                    <input type="date" class="form-control" id="registrationDate">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="parentName" class="form-label">اسم ولي الأمر</label>
+                                    <input type="text" class="form-control" id="parentName">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="parentPhone" class="form-label">هاتف ولي الأمر</label>
+                                    <input type="tel" class="form-control" id="parentPhone">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="academicYear" class="form-label">السنة الدراسية</label>
+                                <select class="form-select" id="academicYear" required>
+                                    <option value="" selected disabled>اختر سنة دراسية</option>
+                                    <option value="1AS">الأولى ثانوي</option>
+                                    <option value="2AS">الثانية ثانوي</option>
+                                    <option value="3AS">الثالثة ثانوي</option>
+                                    <option value="1MS">الأولى متوسط</option>
+                                    <option value="2MS">الثانية متوسط</option>
+                                    <option value="3MS">الثالثة متوسط</option>
+                                    <option value="4MS">الرابعة متوسط</option>
+                                    <option value="5MS">الخامسة متوسط</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">إلغاء</button>
+                            <button class="btn btn-primary" type="button" id="saveStudentBtn">
+                                <i class="fas fa-save me-1"></i> حفظ الطالب
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add Teacher Modal -->
+        <div class="modal fade" id="addTeacherModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">إضافة أستاذ جديد</h5>
+                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <form id="addTeacherForm">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="teacherName" class="form-label">اسم الأستاذ</label>
+                                <input type="text" class="form-control" id="teacherName" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="teacherSubjects" class="form-label">التخصصات</label>
+                                <select class="form-select" id="teacherSubjects" multiple>
+                                    <option value="الرياضيات">الرياضيات</option>
+                                    <option value="الفيزياء">الفيزياء</option>
+                                    <option value="الكيمياء">الكيمياء</option>
+                                    <option value="العلوم">العلوم</option>
+                                    <option value="اللغة العربية">اللغة العربية</option>
+                                    <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                                    <option value="اللغة الفرنسية">اللغة الفرنسية</option>
+                                    <option value="التاريخ">التاريخ</option>
+                                    <option value="الجغرافيا">الجغرافيا</option>
+                                    <option value="الفلسفة">الفلسفة</option>
+                                </select>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="teacherPhone" class="form-label">رقم الهاتف</label>
+                                    <input type="tel" class="form-control" id="teacherPhone">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="teacherEmail" class="form-label">البريد الإلكتروني</label>
+                                    <input type="email" class="form-control" id="teacherEmail">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">إلغاء</button>
+                            <button class="btn btn-primary" type="button" id="saveTeacherBtn">
+                                <i class="fas fa-save me-1"></i> حفظ الأستاذ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add Classroom Modal -->
+        <div class="modal fade" id="addClassroomModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">إضافة قاعة جديدة</h5>
+                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <form id="addClassroomForm">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="classroomName" class="form-label">اسم القاعة</label>
+                                <input type="text" class="form-control" id="classroomName" required>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="classroomCapacity" class="form-label">السعة</label>
+                                    <input type="number" class="form-control" id="classroomCapacity" min="1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="classroomLocation" class="form-label">الموقع</label>
+                                    <input type="text" class="form-control" id="classroomLocation">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">إلغاء</button>
+                            <button class="btn btn-primary" type="button" id="saveClassroomBtn">
+                                <i class="fas fa-save me-1"></i> حفظ القاعة
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add Class Modal -->
+        <div class="modal fade" id="addClassModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">إضافة حصة جديدة</h5>
+                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <form id="addClassForm">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="className" class="form-label">اسم الحصة</label>
+                                    <input type="text" class="form-control" id="className" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="classSubject" class="form-label">المادة</label>
+                                    <input type="text" class="form-control" id="classSubject" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="classAcademicYear" class="form-label">السنة الدراسية</label>
+                                    <select class="form-select" id="classAcademicYear" required>
+                                        <option value="" selected disabled>اختر سنة دراسية</option>
+                                        <option value="1AS">الأولى ثانوي</option>
+                                        <option value="2AS">الثانية ثانوي</option>
+                                        <option value="3AS">الثالثة ثانوي</option>
+                                        <option value="1MS">الأولى متوسط</option>
+                                        <option value="2MS">الثانية متوسط</option>
+                                        <option value="3MS">الثالثة متوسط</option>
+                                        <option value="4MS">الرابعة متوسط</option>
+                                        <option value="5MS">الخامسة متوسط</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="classPrice" class="form-label">سعر الحصة (د.ك)</label>
+                                    <input type="number" class="form-control" id="classPrice" min="0" step="0.5" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="classTeacherSelect" class="form-label">الأستاذ</label>
+                                <select class="form-select" id="classTeacherSelect">
+                                    <option value="" selected disabled>اختر أستاذ</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="classDescription" class="form-label">وصف الحصة</label>
+                                <textarea class="form-control" id="classDescription" rows="2"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label">جدول الحصص</label>
+                                    <button type="button" class="btn btn-sm btn-primary" id="addScheduleBtn">
+                                        <i class="fas fa-plus me-1"></i> إضافة حصة
+                                    </button>
+                                </div>
+                                <div id="classSchedules">
+                                    <!-- Schedule items will be added here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">إلغاء</button>
+                            <button class="btn btn-primary" type="button" id="saveClassBtn">
+                                <i class="fas fa-save me-1"></i> حفظ الحصة
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Assign Card Modal -->
+        <div class="modal fade" id="assignCardModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">تعيين بطاقة لطالب</h5>
+                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="cardStudentSelect" class="form-label">الطالب</label>
+                            <select class="form-select" id="cardStudentSelect">
+                                <option value="" selected disabled>اختر طالب</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="cardUid" class="form-label">رقم البطاقة</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="cardUid" placeholder="اضغط على زر المسح لقراءة البطاقة">
+                                <button class="btn btn-primary" type="button" id="scanCardBtn">
+                                    <i class="fas fa-id-card me-1"></i> مسح البطاقة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">إلغاء</button>
+                        <button class="btn btn-primary" type="button" id="assignCardBtn">
+                            <i class="fas fa-save me-1"></i> تعيين البطاقة
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Payment Modal -->
+        <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">تسديد دفعة</h5>
+                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="paymentStudentName" class="form-label">الطالب</label>
+                            <input type="text" class="form-control" id="paymentStudentName" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="paymentClassName" class="form-label">الحصة</label>
+                            <input type="text" class="form-control" id="paymentClassName" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="paymentMonth" class="form-label">الشهر</label>
+                            <input type="text" class="form-control" id="paymentMonth" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="paymentAmount" class="form-label">المبلغ (د.ك)</label>
+                            <input type="number" class="form-control" id="paymentAmount" min="0" step="0.5" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="paymentDate" class="form-label">تاريخ الدفع</label>
+                            <input type="date" class="form-control" id="paymentDate" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="paymentMethod" class="form-label">طريقة الدفع</label>
+                            <select class="form-select" id="paymentMethod" required>
+                                <option value="cash">نقدي</option>
+                                <option value="bank">حوالة بنكية</option>
+                                <option value="online">دفع إلكتروني</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">إلغاء</button>
+                        <button class="btn btn-success" type="button" id="savePaymentBtn">
+                            <i class="fas fa-money-bill-wave me-1"></i> تسديد الدفعة
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enroll Student Modal -->
+        <div class="modal fade" id="enrollStudentModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">تسجيل طالب في حصة</h5>
+                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="enrollStudentSelect" class="form-label">الطالب</label>
+                            <select class="form-select" id="enrollStudentSelect">
+                                <option value="" selected disabled>اختر طالب</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="enrollClassSelect" class="form-label">الحصة</label>
+                            <select class="form-select" id="enrollClassSelect">
+                                <option value="" selected disabled>اختر حصة</option>
+                            <!-- Classes will be loaded here dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">إلغاء</button>
+                        <button class="btn btn-success" type="button" id="enrollStudentBtn">
+                            <i class="fas fa-user-plus me-1"></i> تسجيل الطالب
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    
+    <!-- Your JavaScript Code -->
+    <script>
+        // Your JavaScript code will be placed here
+        // This is where you would put all the JavaScript logic you provided
+        let currentUser = null;
+        let currentPayment = null;
+        let currentClassId = null;
+        let currentStudentId = null;
+        let scheduleCounter = 1;
+        const socket = io(window.location.origin); // Connects to current host
+
+        // Authentication functions
+        async function login(username, password) {
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Save token and user data
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Set current user
+                    currentUser = data.user;
+                    
+                    // Update UI
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('main-app').style.display = 'block';
+                    document.getElementById('user-name').textContent = currentUser.fullName || currentUser.username;
+                    document.getElementById('user-role').textContent = getRoleName(currentUser.role);
+                    
+                    // Initialize the app
+                    initApp();
+                } else {
+                    Swal.fire('خطأ', data.error || 'اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                Swal.fire('خطأ', 'حدث خطأ أثناء محاولة تسجيل الدخول', 'error');
+            }
+        }
+
+        // ... rest of your JavaScript code ...
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ar">
